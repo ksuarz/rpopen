@@ -14,7 +14,7 @@ client program.  clients and a server.
 Languages
 ---------
 This assignment must be done in C. You will use socket-related system calls as
-well as `fork(3)` and `execl(3)` system calls to create processes and `dup2(3)`
+well as `fork(2)` and `execl(2)` system calls to create processes and `dup2(2)`
 to duplicate file descriptors.
 
 Specifications
