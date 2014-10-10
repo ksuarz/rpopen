@@ -1,0 +1,36 @@
+\documentclass{article}
+,
+\usepackage{verbatim}
+
+\begin{document}
+\title{Homework 2: Socket Programming}
+\author{Kyle Suarez}
+\date{\today}
+\maketitle
+
+\section{Code}
+\subsection{rpopen}
+Implements a remote version of \texttt{popen(2)}. On calling \texttt{rpopen},
+this simply creates a new socket, sets up a connection with an rpserver and
+communicates with it to execute an arbitrary command remotely.
+
+\subsection{rpserver}
+\texttt{rpserver} is a daemon that listens for incoming connections on a socket.
+After receiving a connection on the socket from a client calling
+\texttt{rpopen}, the server forks and has its child execute a specified command.
+
+\section{Compiling and Running}
+To compile everything, simply use the Makefile:
+
+\texttt{\$ make}.
+
+On my home computer, I compiled this with Clang with the following options:
+
+\texttt{\$ cc -g -Wall *.c}
+
+\section{Tests}
+I ran the following tests:
+\begin{enumerate}
+    % TODO
+\end{enumerate}
+\end{document}
