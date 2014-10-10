@@ -1,0 +1,6 @@
+# Temporary files
+*.sw[po]
+*~
+
+# Object files
+*.o
