@@ -3,6 +3,7 @@
  * Kyle Suarez
  */
 
+#include "rpcommon.h"
 #include <netdb.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -11,58 +12,6 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-/**
- * Creates a socket for connecting to the rpserver.
- *
- * @return A socket descriptor created by socket(2). If an error occurs, NULL is
- * returned and errno is set.
- */
-int *
-rpopen_get_socket (void) {
-    int *sock;
-
-    /* Allocate space for the socket */
-    sock = (int *) malloc(sizeof(int));
-    if (!sock) {
-        perror("Failed to malloc(3) space for a socket");
-        return NULL;
-    }
-
-    /* Initialize socket */
-    *sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (*sock < 0) {
-        perror("Failed to create a socket");
-        return NULL;
-    }
-
-    return sock;
-}
-
-/**
- * Binds a socket for connecting to an rpserver.
- *
- * @param sock A pointer to a socket obtained from rpopen_get_socket().
- *
- * @return 0 if the socket was bound properly; -1 otherwise.
- */
-int
-rpopen_bind_socket (int *sock) {
-    struct sockaddr_in addr;
-
-    memset(&addr, 0, sizeof(struct sockaddr_in));
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(0);
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    
-    if (bind(*sock, (struct sockaddr *) &addr, sizeof(struct sockaddr_in)) < 0) {
-        perror("Bind failure");
-        return -1;
-    }
-    else {
-        return 0;
-    }
-}
 
 /**
  * Implements process I/O on a remote host in a way similar to popen(2).
@@ -81,6 +30,7 @@ rpopen (const char *hostname,
                 int port,
         const char *command)
 {
+    FILE *fd;
     char *svr_hostname;
     int *sock;
     struct sockaddr_in svr_addr;
@@ -136,7 +86,7 @@ rpopen (const char *hostname,
         perror("Failed to obtain a socket");
         return NULL;
     }
-    if (rpopen_bind_socket(sock) == -1) {
+    if (rpopen_bind_socket(sock, NULL) == -1) {
         return NULL;
     }
 
@@ -148,7 +98,9 @@ rpopen (const char *hostname,
 
     /* Write the command to the server */
     write(*sock, command, strlen(command));
+    fd = fdopen(*sock, "r");
+    shutdown(*sock, SHUT_WR);
 
     /* Return the response */
-    return (FILE *) sock;
+    return fd;
 }

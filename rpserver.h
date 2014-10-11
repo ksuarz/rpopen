@@ -1,5 +1,8 @@
 #ifndef RPSERVER_H
 #define RPSERVER_H
+
+#include <errno.h>
+
 /*
  * Used for listen(2) - the number of backlogged processes the socket will allow
  * before refusing new connections.
@@ -11,25 +14,16 @@
  */
 #define DEFAULT_PORT 0
 
+/* Interrupt error */
+#ifndef ERESTART
+#define ERESTART EINTR
+#endif
+
 /**
  * Max size for input command buffer. (That is, commands cannot exceed this
  * length in bytes.)
  */
 #define MAXBUFSIZE 2048
-
-/**
- * Create a socket for listening for the rpopen server.
- * @return -1 if an error occurs; otherwise, a descriptor for the socket.
- */
-int
-rpserver_get_socket (void);
-
-/*
- * Binds a socket ready for listening by the rpopen server.
- * @param socket A socket created by rpserver_get_socket.
- */
-int
-rpserver_bind_socket (int);
 
 /**
  * Executes a command read from the socket.

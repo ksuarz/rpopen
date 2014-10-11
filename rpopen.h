@@ -18,23 +18,4 @@
  */
 FILE *
 rpopen (const char *, int, const char *);
-
-/**
- * Creates a socket for connecting to the rpserver.
- *
- * @return A socket descriptor created by socket(2). If an error occurs, NULL is
- * returned and errno is set.
- */
-int *
-rpopen_get_socket (void);
-
-/**
- * Binds a socket for connecting to an rpserver.
- *
- * @param sock A pointer to a socket obtained from rpopen_get_socket().
- *
- * @return 0 if the socket was bound properly; -1 otherwise.
- */
-int
-rpopen_bind_socket (int *);
 #endif
