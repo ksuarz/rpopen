@@ -1,0 +1,44 @@
+\documentclass{article}
+,
+\usepackage{verbatim}
+
+\begin{document}
+\title{Homework 2: Socket Programming}
+\author{Kyle Suarez}
+\date{\today}
+\maketitle
+
+\section{Code}
+\subsection{rpcommon}
+This has two functions (\texttt{rpopen_get_socket} and
+\texttt{rpopen_bind_socket}) for handling sockets that are common to both the
+server and the client.
+
+\subsection{rpopen}
+Implements a remote version of \texttt{popen}. On calling \texttt{rpopen},
+this simply creates a new socket, sets up a connection with an rpserver and
+writes the command it wants to execute over the socket. Then, it obtains a file
+descriptor from the socket via \texttt{fdopen} and returns it to the caller.
+
+\subsection{rpserver}
+\texttt{rpserver} is a daemon that listens for incoming connections on a socket.
+After receiving a connection on the socket from a client calling
+\texttt{rpopen}, the server forks and has its child execute a specified command.
+
+\section{Compiling and Running}
+To compile everything, simply use the Makefile. I added another recipe for
+\texttt{rpcommon.o}.
+
+On my home computer, I compiled this with Clang with the \texttt{-g -Wall}
+options.
+
+\section{Tests}
+I ran the following tests:
+\begin{itemize}
+    \item A regular command. This worked as expected.
+    \item An invalid command. The client receives nothing; errors are printed to
+    standard error on the server side.
+    \item A command that required elevated privileges. This failed as expected
+    and an error message was printed on the command line.
+\end{itemize}
+\end{document}
